@@ -7,6 +7,16 @@ import { map } from 'rxjs/operators';
 import { environment } from '@environments/environment';
 import { User } from '@app/_models';
 
+
+class UserAt {
+      firstname : string;
+      lastname : string;
+      email : string;
+      username : string;
+      password : string;
+      status : string;
+  }
+
 @Injectable({ providedIn: 'root' })
 export class AccountService {
     update: any;
@@ -41,19 +51,48 @@ export class AccountService {
     // }
 
     register(user: User) {
+
+        console.log(user);
         return this.http.post('http://127.0.0.1:8000/users/', user);
     }
 
 
-    login(user.username: User , password: User) {
-        return this.http.post<User>('http://localhost:8000/users/authenticate/',user)
-            .pipe(map(user => {
-                // store user details and jwt token in local storage to keep user logged in between page refreshes
-                localStorage.setItem('user', JSON.stringify(user));
-                this.userSubject.next(user);
-                return user;
-            }));
+    login(username: string , password: string) {
+
+        var userA = new UserAt();
+        userA.username = username;
+        userA.password = password;
+        userA.firstname = "userabc";
+        userA.lastname = "iserabcd";
+        userA.email = "123abc@ga.co";
+        userA.status = "";
+
+        console.log(userA.username);
+        console.log(userA.password);
+
+        console.log("Mylog01 Enter");
+
+        //return this.http.post('http://127.0.0.1:8000/users/', userA);
+
+        //return this.http.post('http://127.0.0.1:8000/users/authenticate/', userA);
+
+
+         return this.http.post<any>('http://localhost:8000/users/authenticate/', userA)
+             .pipe(map(user => {
+        //         // store user details and jwt token in local storage to keep user logged in between page refreshes
+                 console.log("Mylog02");
+                 localStorage.setItem('user', JSON.stringify(user));
+                 console.log("Mylog03 User");
+                 console.log(user);
+                 this.userSubject.next(user);
+                 console.log("Mylog04");
+                 return user;
+             }));
     }
+
+
+
+
 
 
 
@@ -64,7 +103,7 @@ export class AccountService {
         this.router.navigate(['/account/login']);
     }
 
-   
+
 
     getAll() {
         return this.http.get<User[]>(`${environment.apiUrl}/users`);
